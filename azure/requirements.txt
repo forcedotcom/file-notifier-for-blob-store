@@ -1,0 +1,12 @@
+# Do not include azure-functions-worker in this file
+# The Python Worker is managed by the Azure Functions platform
+# Manually managing azure-functions-worker may cause unexpected issues
+
+azure-functions
+azure-identity
+azure-keyvault-secrets
+azure-keyvault-keys
+requests
+# Following crypto packages may not be needed.
+cryptography==41.0.4
+pycryptodomex==3.19.0
