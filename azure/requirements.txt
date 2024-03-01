@@ -9,4 +9,4 @@ azure-keyvault-keys
 requests
 # Following crypto packages may not be needed.
 cryptography==42.0.4
-pycryptodomex==3.19.0
+pycryptodomex==3.19.1
