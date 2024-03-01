@@ -4,4 +4,4 @@ google-cloud-secret-manager==2.16.4
 requests
 pyjwt
 cryptography==42.0.4
-pycryptodomex==3.19.0
+pycryptodomex==3.19.1
