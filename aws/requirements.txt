@@ -1,5 +1,5 @@
 requests
 pyjwt
 boto3
-cryptography==41.0.4
+cryptography==42.0.4
 pycryptodomex==3.19.1
