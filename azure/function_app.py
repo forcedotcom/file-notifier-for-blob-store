@@ -47,13 +47,13 @@ def _get_token_and_instance_url():
     # Cache Miss
     else:
         jwt_token, expiry = _get_jwt()
-        logging.info('JWT: %s', str(jwt_token))
+        logging.info('JWT generated successfully')
 
         instance_url = os.environ['SF_LOGIN_URL'] + '/services/oauth2/token'
         data = {'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion': jwt_token}
         core_response = requests.post(instance_url, data=data)
         core_response.raise_for_status()
-        logging.info('Response core access token - %s', str(core_response.json()))
+        logging.info('Response core access token generated successfully')
 
         core_access_token = core_response.json()['access_token']
         core_instance_url = core_response.json()['instance_url']
@@ -64,7 +64,7 @@ def _get_token_and_instance_url():
         cdp_url = core_instance_url + cdp_token_path
         cdp_response = requests.post(cdp_url, data=cdp_data)
         cdp_response.raise_for_status()
-        logging.info('Response cdp access token - %s', str(cdp_response.json()))
+        logging.info('Response cdp access token generated successfully')
         cdp_access_token = cdp_response.json()['access_token']
         instance_url = cdp_response.json()['instance_url']
         cache['cdp_access_token'] = {'token': cdp_access_token, 'ttl': expiry, 'instance_url': instance_url}
