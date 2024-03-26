@@ -18,7 +18,8 @@ pip3 install --platform manylinux2014_x86_64 --target=package --implementation c
 --only-binary=:all: --upgrade -r aws/requirements.txt
 
 cd package
-zip -r ../cloud_function_zips/aws_lambda_function.zip ../cloud_function_zips/
+zip -r ../cloud_function_zips/aws_lambda_function.zip .
 cd ..
 zip ./cloud_function_zips/aws_lambda_function.zip aws/unstructured_data.py
+rm -rf package/
 ```
