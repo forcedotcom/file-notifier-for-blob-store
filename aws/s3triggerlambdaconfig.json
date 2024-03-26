@@ -1,0 +1,21 @@
+{
+"LambdaFunctionConfigurations": [
+    {
+      "Id": "s3eventtriggerslambda-shoyeb",
+      "LambdaFunctionArn": "arn:aws:lambda:us-west-2:240852588578:function:unstructured-dev-shoyeb",
+      "Events": ["s3:ObjectCreated:*"],
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+		{ "Name":"prefix", "Value":"unstructured/data_new"
+},
+            {
+              "Name": "suffix",
+              "Value": ".txt"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+
+### For Azure, Create new zip file to build
+```
+zip -r cloud_function_zips/azure_function_app.zip azure/function_app.py azure/host.json azure/requirements.txt -x '*__pycache__*'
+```
+
+### For GCP, create new zip file
+```
+zip -r cloud_function_zips/gcp_cloud_function.zip gcp/main.py gcp/requirements.txt -x '*__pycache__*'
+```
+
+### For AWS, create new zip file
+```
+pyenv virtualenv 3.11.4 aws
+pyenv activate aws
+pip3 install --platform manylinux2014_x86_64 --target=package --implementation cp \
+--python-version 3.11.4 \
+--only-binary=:all: --upgrade -r aws/requirements.txt
+
+cd package
+zip -r ../cloud_function_zips/aws_lambda_function.zip ../cloud_function_zips/
+cd ..
+zip ./cloud_function_zips/aws_lambda_function.zip aws/unstructured_data.py
+```

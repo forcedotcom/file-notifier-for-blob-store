@@ -1,24 +1,10 @@
 
-### For Azure, Create new zip file to build
-```
-zip -r build/function_app.zip function_app.py host.json requirements.txt -x '*__pycache__*'
-```
+### For Salesforce Data Cloud Users/Customers
 
-### For GCP, create new zip file
-```
-zip -r source_code.zip main.py requirements.txt -x '*__pycache__*'
-```
+### For Azure, Please download zip file from cloud_function_zips/azure_function_app.zip
+### For GCP,  Please download zip file from cloud_function_zips/gcp_cloud_function.zip
+### For AWS, Please download zip file from cloud_function_zips/aws_lambda_function.zip
 
-### For AWS, create new zip file
-```
-pyenv virtualenv 3.11.4 aws
-pyenv activate aws
-pip3 install --platform manylinux2014_x86_64 --target=package --implementation cp \
---python-version 3.11.4 \
---only-binary=:all: --upgrade -r requirements.txt 
+### For Salesforce Data Cloud Developers
 
-cd package
-zip -r ../unstructured_package.zip .
-cd ..
-zip ./unstructured_package.zip unstructured_data.py
-```
+please refer dev-help.txt while making any changes to cloud functions
