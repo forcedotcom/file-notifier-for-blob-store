@@ -2,13 +2,17 @@
 ### For Azure, Create new zip file to build
 ```
 rm -f cloud_function_zips/azure_function_app.zip
-zip -r cloud_function_zips/azure_function_app.zip azure/function_app.py azure/host.json azure/requirements.txt -x '*__pycache__*'
+cd azure
+zip -r azure_function_app.zip function_app.py host.json requirements.txt -x '*__pycache__*'
+mv azure_function_app.zip ../cloud_function_zips
 ```
 
 ### For GCP, create new zip file
 ```
 rm -f cloud_function_zips/gcp_cloud_function.zip
-zip -r cloud_function_zips/gcp_cloud_function.zip gcp/main.py gcp/requirements.txt -x '*__pycache__*'
+cd gcp
+zip -r gcp_cloud_function.zip main.py requirements.txt -x '*__pycache__*'
+mv gcp_cloud_function.zip ../cloud_function_zips
 ```
 
 ### For AWS, create new zip file
