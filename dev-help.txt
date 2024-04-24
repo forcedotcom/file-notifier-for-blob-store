@@ -31,3 +31,7 @@ zip ../cloud_function_zips/aws_lambda_function.zip unstructured_data.py
 cd ..
 rm -rf package/
 ```
+
+### For installers, create new zip file
+rm -rf installer.zip
+zip -r installers.zip installers
