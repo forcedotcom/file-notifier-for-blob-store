@@ -117,7 +117,7 @@ def _get_rsa_key():
 
 def _get_consumer_key():
     secret_id = os.environ.get('CONSUMER_KEY', 'CONSUMER_KEY')
-    return _access_secret(secret_id).rstrip('\n')
+    return _access_secret(secret_id).rstrip('\n').rstrip('\r')
 
 
 def _access_secret(secret_id: str, project_id: str = None) -> str:

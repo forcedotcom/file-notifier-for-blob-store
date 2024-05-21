@@ -349,8 +349,8 @@ if [ ${#validation_errors[@]} -gt 0 ]; then
     echo "$validation_error"
     echo "$validation_error" >> $log_filename
   done
-  echo "NOTE: Please check sample config file at https://git.soma.salesforce.com/rdesai/unstructuredscripts/blob/master/input_parameters_s3.conf"
-  echo "NOTE: Please check sample config file at https://git.soma.salesforce.com/rdesai/unstructuredscripts/blob/master/input_parameters_s3.conf" >> $log_filename
+  echo "NOTE: Please check sample config file at https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/installers/aws/input_parameters_s3.conf"
+  echo "NOTE: Please check sample config file at https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/installers/aws/input_parameters_s3.conf" >> $log_filename
   exit
 else
   echo "No validation errors."

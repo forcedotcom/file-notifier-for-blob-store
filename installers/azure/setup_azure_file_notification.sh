@@ -341,8 +341,8 @@ if [ ${#validation_errors[@]} -gt 0 ]; then
     echo "$validation_error"
     echo "$validation_error" >> $log_filename
   done
-  echo "NOTE: Please check descriptions of each variable in https://git.soma.salesforce.com/rdesai/unstructuredscripts/blob/master/input_parameters_azure.conf"
-  echo "NOTE: Please check descriptions of each variable in https://git.soma.salesforce.com/rdesai/unstructuredscripts/blob/master/input_parameters_azure.conf" >> $log_filename
+  echo "NOTE: Please check descriptions of each variable in https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/installers/azure/input_parameters_azure.conf"
+  echo "NOTE: Please check descriptions of each variable in https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/installers/azure/input_parameters_azure.conf" >> $log_filename
   exit
 else
   echo "No validation errors."
