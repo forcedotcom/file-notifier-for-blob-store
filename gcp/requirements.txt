@@ -1,7 +1,7 @@
 functions-framework==3.3.0
 cloudevents==1.9.0
 google-cloud-secret-manager==2.16.4
-requests==2.31.0
+requests==2.32.0
 pyjwt==2.8.0
 cryptography==42.0.4
 pycryptodomex==3.19.1
