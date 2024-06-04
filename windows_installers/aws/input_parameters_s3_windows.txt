@@ -5,47 +5,47 @@
 #all the below attributes (event s3 source bucket, consumer key, rsa private key, lambda function, lambda role, lambda function s3 bucket) will be created if the resources with the provided name does not exists
 
 #org username
-SF_USERNAME=epic.a3bebba0f22f@salesforce.com
+SF_USERNAME=<YOUR_ORG_USERNAME>
 
 #SF_LOGIN_URL is https://login.test1.pc-rnd.salesforce.com/ or https://login.test2.pc-rnd.salesforce.com/ for pre-prod
 #SF_LOGIN_URL is https://login.salesforce.com/ for prod
-SF_LOGIN_URL=https://login.test8.pc-rnd.salesforce.com/
+SF_LOGIN_URL=<YOUR_ORG_URL_PICK_FROM_ABOVE_ACCORDING_TO_WHETHER_YOUR_ORG_IS_PREPROD_OR_PROD>
 
 #Contains your AWS Account Id (https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html#ViewYourAWSId)
-AWS_ACCOUNT_ID=436594306139
+AWS_ACCOUNT_ID=<YOUR_AWS_ACCOUNT_ID>
 
 #region of the s3 bucket, valid aws regions can be found in https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
-REGION=us-west-2
+REGION=<YOUR_AWS_REGION>
 
 #name of the bucket where data files persist, value of EVENT_S3_SOURCE_BUCKET and EVENT_S3_SOURCE_KEY should be aligned with S3 connector parent dir & ULDO folder path created in the tenant org
-EVENT_S3_SOURCE_BUCKET=rag-win-perf-testz
+EVENT_S3_SOURCE_BUCKET=<YOUR_DATA_SOURCE_BUCKET_NAME>
 
 #name of the folder in the above bucket where data files persist, value of EVENT_S3_SOURCE_BUCKET and EVENT_S3_SOURCE_KEY should be aligned with S3 connector parent dir & ULDO folder path created in the tenant org (please don't include any begining and ending slash to the folder name/path)
-EVENT_S3_SOURCE_KEY=dataz
+EVENT_S3_SOURCE_KEY=<YOUR_DATA_FOLDER_WITHIN_DATA_SOURCE_BUCKET>
 
 #Contains the name of the S3 bucket that contains the source code .zip file downloaded from (https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/cloud_function_zips/aws_lambda_function.zip) to run your Lambda function
-LAMBDA_FUNC_S3_BUCKET=rag-win-perf-test-sourcez
+LAMBDA_FUNC_S3_BUCKET=<YOUR_CLOUD_FUNCTION_ZIP_STORE_BUCKET_NAME>
 
 #Contains the S3 key for the Lambda function inside the S3 bucket (LAMBDA_FUNCTION_S3_BUCKET), this will also be used as prefix value for event notification, below event s3 source key value can be empty, if you wish to set notifications for entire bucket,
-LAMBDA_FUNC_LOC_S3_KEY=code
+LAMBDA_FUNC_LOC_S3_KEY=<YOUR_CODE_FOLDER_WITHIN_CLOUD_FUNCTION_ZIP_STORE_BUCKET>
 
 #local path of the source code of cloud function which needs to be downloaded from https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/cloud_function_zips/aws_lambda_function.zip
-SOURCE_CODE_LOCAL_PATH=C:\Users\rdesai\Downloads\aws_lambda_function.zip
+SOURCE_CODE_LOCAL_PATH=<YOUR_LOCAL_PATH_FOR_SOURCE_CODE_OF_CLOUD_FUNCTION_ZIP>
 
 #The name of the execution role to run the Lambda function. It can be any string. eg: <yourusecase>-<yourname>-lambda-role (monitor-proj-raghu-lambda-role)
-LAMBDA_ROLE=newragwinperflambdarolez
+LAMBDA_ROLE=<YOUR_LAMBDA_ROLE_NAME>
 
 #The name of the Lambda function to be deployed in your AWS account. It can be any string. eg: <yourusecase>-<yourname>-lambda-fn (monitor-proj-raghu-lambda-fn)
-LAMBDA_FUNC_NAME=newragwinperflambdafunctionz
+LAMBDA_FUNC_NAME=<YOUR_LAMBDA_FUNCTION_NAME>
 
 #name of consumer key, this has to be unique across AWS account, recommended to use your name in the key eg: raghu-s3-consumer-key
-CONSUMER_KEY_NAME=new-rag-win-consumer-keyz
+CONSUMER_KEY_NAME=<YOUR_CONSUMER_KEY_NAME>
 
 #Contains the Consumer Key of the connected app that you created in your org.
-CONSUMER_KEY_VALUE=3MVG9Iq.NVuJjxmNOHYtrnxD9.4Ogb3aBK0iVWzCTVTmqteF72vU2K5J5ygyTS5BMF8xH_PlUhuFu9uvxHYD5
+CONSUMER_KEY_VALUE==<CONSUMER_KEY_OF_CONNECTED_APP_IN_YOUR_ORG>
 
 #name of the private key, this has to be unique across AWS account, recommended to use your name in the key eg: raghu-s3-rsa-private-key
-RSA_PRIVATE_KEY_NAME=new-rag-win-rsa-private-keyz
+RSA_PRIVATE_KEY_NAME=<YOUR_RSA_PRIVATE_KEY_NAME>
 
 #local path of pem file (generated during pre-requisite steps in connected app creation, you would have generated keypair.key please rename it to keypair.pem and use it here)  For example: /Users/Name/Documents/keypair.pem
-PEM_FILE_PATH=C:\Users\rdesai\Downloads\keypair.pem
+PEM_FILE_PATH=<YOUR_LOCAL_FILE_PATH_FOR_KEYPAIR.PEM_FILE>

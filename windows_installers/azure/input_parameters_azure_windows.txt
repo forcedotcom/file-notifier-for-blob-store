@@ -5,44 +5,44 @@
 #all the below attributes(resource group, storage account, container, keyvault, system topic, app, subscription) will be created if the resources with the provided values are not found
 
 #subscription name of your azure account
-AZURE_SUBSCRIPTION_NAME=DataCloudAzureConnector
+AZURE_SUBSCRIPTION_NAME=<YOUR_AZURE_SUBSCRIPTION_NAME>
 
 #Contains the name of your Azure resource group (Resource group name can only contain alphanumeric characters, hyphens, and underscores) - if provided resource group name does not exists, new resource group will be created
-RESOURCE_GROUP=ragwinazurergv
+RESOURCE_GROUP=<YOUR_RESOURCE_GROUP>
 
 #location of resource group (eg - eastus), valid azure locations can be found in https://gist.github.com/ausfestivus/04e55c7d80229069bf3bc75870630ec8
-LOCATION=eastus
+LOCATION=<YOUR_LOCATION>
 
 #Contains the ID of your Azure storage account (Storage account name must be between 3 and 24 characters, and can only contain lowercase letters and numbers)
-STORAGE_ACCOUNT=ragwinazuresav
+STORAGE_ACCOUNT=<YOUR_STORAGE_ACCOUNT>
 
 #name of the container where the data files reside (Container name must start and end with a letter or number, and can only contain lowercase letters, numbers, and hyphens.) - this folder has to be aligned with azure connector parent dir and UDLO folder path created in the tenant org
-CONTAINER_NAME=ragwinazurecnv
+CONTAINER_NAME=<YOUR_CONTAINER_NAME>
 
 #your salesforce username
-SF_USERNAME=epic.a3bebba0f22f@salesforce.com
+SF_USERNAME=<YOUR_ORG_USERNAME>
 
 #SF_LOGIN_URL is https://login.test1.pc-rnd.salesforce.com/ or #https://login.test2.pc-rnd.salesforce.com/ for pre-prod
 #SF_LOGIN_URL is https://login.salesforce.com/ for prod
-SF_LOGIN_URL=https://login.test8.pc-rnd.salesforce.com/
+SF_LOGIN_URL=<YOUR_ORG_URL_PICK_FROM_ABOVE_ACCORDING_TO_WHETHER_YOUR_ORG_IS_PREPROD_OR_PROD>
 
 #local path of the source code for cloud function code (download zip from https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/cloud_function_zips/azure_function_app.zip)
-SOURCE_CODE_LOCAL_PATH=C:\Users\rdesai\Downloads\azure_function_app.zip
+SOURCE_CODE_LOCAL_PATH=<YOUR_LOCAL_SOURCE_CODE_ZIP_PATH_OF_CLOUD_FUNCTION>
 
 #name of the app (Function App name must be between 2 and 60 characters long and can only contain letters, numbers, and hyphens)
-APP_NAME=ragwinazureanv
+APP_NAME=<YOUR_APP_NAME>
 
 #name of the system-topic - choose to publish the events (System Topic name must be between 3 and 24 characters long and can only contain letters, numbers, and hyphens), there can only 1 topic created per storage account
-TOPIC_NAME=ragwinazuretnv
+TOPIC_NAME=<YOUR_TOPIC_NAME>
 
 #name of subscription to listen from system-topic (Topic Subscriber name must be between 1 and 50 characters long and can only contain letters, numbers, and hyphens)
-SUBSCRIPTION_NAME=ragwinazuresnv
+SUBSCRIPTION_NAME=<YOUR_SUBSCRIPTION_NAME>
 
 #Contains the name of your Azure Key Vault instance
-KEY_VAULT_NAME=ragwinazurekvnv
+KEY_VAULT_NAME=<YOUR_KEY_VAULT_NAME>
 
 #value of consumer key copied during the connected app creation (during pre-requisite)
-CONSUMER_KEY_VALUE=3MVG9Iq.NVuJjxmNOHYtrnxD9.4Ogb3aBK0iVWzCTVTmqteF72vU2K5J5ygyTS5BMF8xH_PlUhuFu9uvxHYD5
+CONSUMER_KEY_VALUE=<YOUR_CONSUMER_KEY_VALUE>
 
 #local path of PEM file (generated during pre-requisite steps in connected app creation, you would have generated keypair.key please rename it to keypair.pem and use it here)  For example: /Users/Name/Documents/keypair.pem
-PEM_FILE_PATH=C:\Users\rdesai\Downloads\keypair.pem
+PEM_FILE_PATH=<YOUR_LOCAL_KEYPAIR_PEM_FILE_PATH>
