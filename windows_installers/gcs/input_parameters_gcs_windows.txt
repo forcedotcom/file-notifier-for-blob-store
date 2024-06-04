@@ -1,0 +1,38 @@
+#your gcs project name
+PROJECT_ID=sfmc-data-cloud-poc
+
+#Contains the region of your GCS bucket. (If multi-region, select any region available in that location.)
+GCS_REGION=us-east1
+
+#your salesforce login url
+SF_LOGIN_URL=https://login.test8.pc-rnd.salesforce.com/
+
+#your salesforce username
+SF_USERNAME=epic.a3bebba0f22f@salesforce.com
+
+#Contains the blob store bucket name where you will set up file notifications
+EVENT_GCS_BUCKET_SOURCE=perf-rag-testing-03
+
+#gcs bucket location
+LOCATION=us-east1
+
+#Contains the name of the gcs bucket that contains the source code .zip file to run your cloud function.
+SOURCE_CODE_BUCKET_NAME=perf-rag-testing-source-03
+
+#your local code path of cloud function zip file
+SOURCE_CODE_LOCAL_PATH=C:\Users\rdesai\Downloads\gcp_cloud_function.zip
+
+#your trigger location (keep it 'us' in case of multi-region)
+TRIGGER_REGION=us-east1
+
+#Contains the name of the secret you create in Secret Manager when you upload the Consumer Key created in your connected app.
+CONSUMER_KEY_NAME=CONSUMER_KEY_Ragh104
+
+#Contains the value of the secret you create in Secret Manager when you upload the Consumer Key created in your connected app.
+CONSUMER_KEY_VALUE=3MVG9Iq.NVuJjxmNOHYtrnxD9.4Ogb3aBK0iVWzCTVTmqteF72vU2K5J5ygyTS5BMF8xH_PlUhuFu9uvxHYD5
+
+#Contains the name of the secret you create in Secret Manager when you upload the RSA private key (.pem file).
+RSA_PRIVATE_KEY_NAME=RSA_PRIVATE_KEY_Ragh104
+
+#Contains the complete path to the keypair.pem file on your local machine. For example: /Users/Name/Documents/keypair.pem
+PEM_FILE_PATH=C:\Users\rdesai\Downloads\keypair.pem

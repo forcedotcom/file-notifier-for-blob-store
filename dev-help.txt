@@ -33,5 +33,9 @@ rm -rf package/
 ```
 
 ### For installers, create new zip file
-rm -rf installer.zip
+rm -rf installers.zip
 zip -r installers.zip installers
+
+### For windows based installers, create new zip file
+rm -rf windows_installers.zip
+zip -r windows_installers.zip windows_installers
