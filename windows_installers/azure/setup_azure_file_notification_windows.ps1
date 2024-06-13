@@ -154,7 +154,7 @@ while ($true) {
 if (Get-Command az -ErrorAction SilentlyContinue) {
     Write-Host "Azure CLI is installed."
 } else {
-    Write-Host "Azure CLI is not installed."
+    Write-Host "Azure CLI is not installed, please install AZURE CLI for windows from https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli"
     exit
 }
 

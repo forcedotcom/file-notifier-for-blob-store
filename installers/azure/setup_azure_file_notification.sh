@@ -355,6 +355,9 @@ if [ "${IS_AZURE_CLI_NEWLY_INSTALLED}" = "false" ]; then
   az login >> $log_filename
 fi
 
+#set azure subscription
+az account set --subscription $AZURE_SUBSCRIPTION_NAME
+
 is_valid_location
 
 echo "Step 1/14 : Successfully logged into Azure"

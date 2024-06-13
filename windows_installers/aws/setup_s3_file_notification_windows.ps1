@@ -203,7 +203,7 @@ $awsCliVersion = aws --version 2>&1
 if ($LASTEXITCODE -eq 0) {
     Write-Host "AWS CLI is installed. Version: $awsCliVersion"
 } else {
-    Write-Host "AWS CLI is not installed."
+    Write-Host "AWS CLI is not installed, please install AWS CLI for windows from https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"
 }
 
 
