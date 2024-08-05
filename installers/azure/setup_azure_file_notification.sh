@@ -360,38 +360,38 @@ az account set --subscription $AZURE_SUBSCRIPTION_NAME
 
 is_valid_location
 
-echo "Step 1/14 : Successfully logged into Azure"
-echo "Step 1/14 : Successfully logged into Azure" >> $log_filename
+echo "Step 1/13 : Successfully logged into Azure"
+echo "Step 1/13 : Successfully logged into Azure" >> $log_filename
 
 #create if only if it does not exists
 if az group show --name $RESOURCE_GROUP 2>&1 | grep -q "ResourceGroupNotFound"; then
   az group create --name $RESOURCE_GROUP --location $LOCATION >> $log_filename
   if [ $? -eq 0 ]; then
-    echo "Step 2/14 : Successfully created resource group ${RESOURCE_GROUP}"
-    echo "Step 2/14 : Successfully created resource group ${RESOURCE_GROUP}" >> $log_filename
+    echo "Step 2/13 : Successfully created resource group ${RESOURCE_GROUP}"
+    echo "Step 2/13 : Successfully created resource group ${RESOURCE_GROUP}" >> $log_filename
   else
-    echo "Step 2/14 : Failed to create resource group ${RESOURCE_GROUP}"
-    echo "Step 2/14 : Failed to create resource group ${RESOURCE_GROUP}" >> $log_filename
+    echo "Step 2/13 : Failed to create resource group ${RESOURCE_GROUP}"
+    echo "Step 2/13 : Failed to create resource group ${RESOURCE_GROUP}" >> $log_filename
     exit
   fi
 else
-  echo "Step 2/14 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group";
-  echo "Step 2/14 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group" >> $log_filename
+  echo "Step 2/13 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group";
+  echo "Step 2/13 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group" >> $log_filename
 fi
 
 if az storage account show --name $STORAGE_ACCOUNT --resource-group $RESOURCE_GROUP 2>&1 | grep -q "ResourceNotFound" ; then
   az storage account create --name ${STORAGE_ACCOUNT} --resource-group ${RESOURCE_GROUP} --location $LOCATION >> $log_filename
   if [ $? -eq 0 ]; then
-     echo "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}"
-     echo "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}" >> $log_filename
+     echo "Step 3/13 : Successfully created storage account ${STORAGE_ACCOUNT}"
+     echo "Step 3/13 : Successfully created storage account ${STORAGE_ACCOUNT}" >> $log_filename
   else
-    echo "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}"
-    echo "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}" >> $log_filename
+    echo "Step 3/13 : Failed to create storage account ${STORAGE_ACCOUNT}"
+    echo "Step 3/13 : Failed to create storage account ${STORAGE_ACCOUNT}" >> $log_filename
     exit
   fi
 else
-  echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account";
-  echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account" >> $log_filename
+  echo "Step 3/13 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account";
+  echo "Step 3/13 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account" >> $log_filename
 fi
 
 conn=$(az storage account show-connection-string --resource-group $RESOURCE_GROUP --name $STORAGE_ACCOUNT --query connectionString -o tsv)
@@ -399,35 +399,35 @@ conn=$(az storage account show-connection-string --resource-group $RESOURCE_GROU
 if az storage container show --account-name $STORAGE_ACCOUNT --name $CONTAINER_NAME 2>&1 | grep -q "ContainerNotFound"; then
   az storage container create --name $CONTAINER_NAME --connection-string $conn >> $log_filename
   if [ $? -eq 0 ]; then
-     echo "Step 4/14 : Successfully created container ${CONTAINER_NAME}"
-     echo "Step 4/14 : Successfully created container ${CONTAINER_NAME}" >> $log_filename
+     echo "Step 4/13 : Successfully created container ${CONTAINER_NAME}"
+     echo "Step 4/13 : Successfully created container ${CONTAINER_NAME}" >> $log_filename
   else
-    echo "Step 4/14 : Failed to create container ${CONTAINER_NAME}"
-    echo "Step 4/14 : Failed to create container ${CONTAINER_NAME}" >> $log_filename
+    echo "Step 4/13 : Failed to create container ${CONTAINER_NAME}"
+    echo "Step 4/13 : Failed to create container ${CONTAINER_NAME}" >> $log_filename
     exit
   fi
 else
-  echo "Step 4/14 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container";
-  echo "Step 4/14 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container" >> $log_filename
+  echo "Step 4/13 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container";
+  echo "Step 4/13 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container" >> $log_filename
 fi
 
 az provider register --namespace Microsoft.EventGrid
 
-echo "Step 5/14 : Successfully registered the namespace"
-echo "Step 5/14 : Successfully registered the namespace" >> $log_filename
+echo "Step 5/13 : Successfully registered the namespace"
+echo "Step 5/13 : Successfully registered the namespace" >> $log_filename
 
 az provider show --namespace Microsoft.EventGrid --query "registrationState"
 
 export subscriptionId="$(az account show --query id -o tsv)"
 
 if az eventgrid system-topic list --resource-group $RESOURCE_GROUP 2>&1 | grep -q $TOPIC_NAME ; then
-  echo "Step 6/14 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic"
-  echo "Step 6/14 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic" >> $log_filename
+  echo "Step 6/13 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic"
+  echo "Step 6/13 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic" >> $log_filename
 else
   EXISTING_SYSTEM_TOPIC=$(az eventgrid system-topic list --subscription $subscriptionId --resource-group $RESOURCE_GROUP --query "[].source" --output json)
   if echo ${EXISTING_SYSTEM_TOPIC} | grep -q "/subscriptions/${subscriptionId}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Storage/storageAccounts/${STORAGE_ACCOUNT}" ; then
-    echo "Step 6/14 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account"
-    echo "Step 6/14 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account" >> $log_filename
+    echo "Step 6/13 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account"
+    echo "Step 6/13 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account" >> $log_filename
     exit
   else
     az eventgrid system-topic create --name $TOPIC_NAME\
@@ -436,11 +436,11 @@ else
       --topic-type microsoft.storage.storageaccounts \
       --location ${LOCATION} >> $log_filename
     if [ $? -eq 0 ]; then
-      echo "Step 6/14 : Successfully created system-topic ${TOPIC_NAME}"
-      echo "Step 6/14 : Successfully created system-topic ${TOPIC_NAME}" >> $log_filename
+      echo "Step 6/13 : Successfully created system-topic ${TOPIC_NAME}"
+      echo "Step 6/13 : Successfully created system-topic ${TOPIC_NAME}" >> $log_filename
     else
-      echo "Step 6/14 : Failed to create system-topic ${TOPIC_NAME}"
-      echo "Step 6/14 : Failed to create system-topic ${TOPIC_NAME}" >> $log_filename
+      echo "Step 6/13 : Failed to create system-topic ${TOPIC_NAME}"
+      echo "Step 6/13 : Failed to create system-topic ${TOPIC_NAME}" >> $log_filename
       exit
     fi
 
@@ -459,71 +459,64 @@ if az functionapp show --name $APP_NAME --resource-group $RESOURCE_GROUP 2>&1 | 
     --assign-identity '[system]' \
     --storage-account ${STORAGE_ACCOUNT} >> $log_filename
     if [ $? -eq 0 ]; then
-      echo "Step 7/14 : Successfully created function app ${APP_NAME}"
-      echo "Step 7/14 : Successfully created function app ${APP_NAME}" >> $log_filename
+      echo "Step 7/13 : Successfully created function app ${APP_NAME}"
+      echo "Step 7/13 : Successfully created function app ${APP_NAME}" >> $log_filename
     else
-      echo "Step 7/14 : Failed create function app ${APP_NAME}"
-      echo "Step 7/14 : Failed create function app ${APP_NAME}" >> $log_filename
+      echo "Step 7/13 : Failed create function app ${APP_NAME}"
+      echo "Step 7/13 : Failed create function app ${APP_NAME}" >> $log_filename
       exit
     fi
 else
-    echo "Step 7/14 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app";
-    echo "Step 7/14 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app" >> $log_filename
+    echo "Step 7/13 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app";
+    echo "Step 7/13 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app" >> $log_filename
 fi
 
 if az keyvault show --name $KEY_VAULT_NAME --resource-group $RESOURCE_GROUP 2>&1 | grep -q "ResourceNotFound" ; then
 
   az keyvault create --name $KEY_VAULT_NAME --resource-group $RESOURCE_GROUP >> $log_filename
   if [ $? -eq 0 ]; then
-    echo "Step 8/14 : Successfully created keyVault ${KEY_VAULT_NAME}"
-    echo "Step 8/14 : Successfully created keyVault ${KEY_VAULT_NAME}" >> $log_filename
+    echo "Step 8/13 : Successfully created keyVault ${KEY_VAULT_NAME}"
+    echo "Step 8/13 : Successfully created keyVault ${KEY_VAULT_NAME}" >> $log_filename
   else
-    echo "Step 8/14 : Failed to create keyVault ${KEY_VAULT_NAME}"
-    echo "Step 8/14 : Failed to create keyVault ${KEY_VAULT_NAME}" >> $log_filename
+    echo "Step 8/13 : Failed to create keyVault ${KEY_VAULT_NAME}"
+    echo "Step 8/13 : Failed to create keyVault ${KEY_VAULT_NAME}" >> $log_filename
     exit
   fi
 
 else
-  echo "Step 8/14 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault";
-  echo "Step 8/14 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault" >> $log_filename
+  echo "Step 8/13 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault";
+  echo "Step 8/13 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault" >> $log_filename
 fi
 
 if az keyvault key show --vault-name $KEY_VAULT_NAME --name "RSA-PRIVATE-KEY" 2>&1 | grep -q "KeyNotFound"; then
   az keyvault key import --vault-name $KEY_VAULT_NAME --name "RSA-PRIVATE-KEY" --pem-file $PEM_FILE_PATH --protection software >> $log_filename
   if [ $? -eq 0 ]; then
-    echo "Step 9/14 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
-    echo "Step 9/14 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" >> $log_filename
+    echo "Step 9/13 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
+    echo "Step 9/13 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" >> $log_filename
   else
-    echo "Step 9/14 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
-    echo "Step 9/14 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" >> $log_filename
+    echo "Step 9/13 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
+    echo "Step 9/13 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" >> $log_filename
     exit
   fi
 else
-  echo "Step 9/14 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY";
-  echo "Step 9/14 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY" >> $log_filename
+  echo "Step 9/13 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY";
+  echo "Step 9/13 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY" >> $log_filename
 fi
 
 if az keyvault secret show --vault-name $KEY_VAULT_NAME --name "CONSUMER-KEY" 2>&1 | grep -q "SecretNotFound"; then
   az keyvault secret set --vault-name $KEY_VAULT_NAME --name "CONSUMER-KEY" --value $CONSUMER_KEY_VALUE >> $log_filename
   if [ $? -eq 0 ]; then
-    echo "Step 10/14 : Successfully created key with name CONSUMER-KEY under ${KEY_VAULT_NAME}"
-    echo "Step 10/14 : Successfully created key with name CONSUMER-KEY under ${KEY_VAULT_NAME}" >> $log_filename
+    echo "Step 10/13 : Successfully created key with name CONSUMER-KEY under ${KEY_VAULT_NAME}"
+    echo "Step 10/13 : Successfully created key with name CONSUMER-KEY under ${KEY_VAULT_NAME}" >> $log_filename
   else
-    echo "Step 10/14 : Failed to create key with name CONSUMER-KEY under ${KEY_VAULT_NAME}"
-    echo "Step 10/14 : Failed to create key with name CONSUMER-KEY under ${KEY_VAULT_NAME}" >> $log_filename
+    echo "Step 10/13 : Failed to create key with name CONSUMER-KEY under ${KEY_VAULT_NAME}"
+    echo "Step 10/13 : Failed to create key with name CONSUMER-KEY under ${KEY_VAULT_NAME}" >> $log_filename
     exit
   fi
 else
-  echo "Step 10/14 : Secret with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of CONSUMER-KEY";
-  echo "Step 10/14 : Secret with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of CONSUMER-KEY" >> $log_filename
+  echo "Step 10/13 : Secret with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of CONSUMER-KEY";
+  echo "Step 10/13 : Secret with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of CONSUMER-KEY" >> $log_filename
 fi
-
-appPrincipalIdentity="$(az functionapp show --name $APP_NAME --resource-group $RESOURCE_GROUP --query identity.principalId -o tsv)"
-
-az keyvault set-policy -n $KEY_VAULT_NAME --resource-group $RESOURCE_GROUP --key-permissions get list sign import --secret-permissions get list --object-id $appPrincipalIdentity >> $log_filename
-
-echo "Step 11/14 : Successfully set key and secret permissions to KeyVault with name ${KEY_VAULT_NAME}"
-echo "Step 11/14 : Successfully set key and secret permissions to KeyVault with name ${KEY_VAULT_NAME}" >> $log_filename
 
 az functionapp config appsettings set --name $APP_NAME \
   --resource-group ${RESOURCE_GROUP} \
@@ -531,14 +524,14 @@ az functionapp config appsettings set --name $APP_NAME \
   SF_USERNAME=$SF_USERNAME \
   KEY_VAULT_NAME=$KEY_VAULT_NAME >> $log_filename
 
-echo "Step 12/14 : Successfully set config settings to function app with name ${APP_NAME}"
-echo "Step 12/14 : Successfully set config settings to function app with name ${APP_NAME}" >> $log_filename
+echo "Step 11/13 : Successfully set config settings to function app with name ${APP_NAME}"
+echo "Step 11/13 : Successfully set config settings to function app with name ${APP_NAME}" >> $log_filename
 
 az functionapp deployment source config-zip --resource-group $RESOURCE_GROUP \
   --name $APP_NAME --src $SOURCE_CODE_LOCAL_PATH --build-remote true --verbose >> $log_filename
 
-echo "Step 13/14 : Successfully deplopyed function app with name ${APP_NAME}"
-echo "Step 13/14 : Successfully deplopyed function app with name ${APP_NAME}" >> $log_filename
+echo "Step 12/13 : Successfully deplopyed function app with name ${APP_NAME}"
+echo "Step 12/13 : Successfully deplopyed function app with name ${APP_NAME}" >> $log_filename
 
 if az eventgrid system-topic event-subscription show --name $SUBSCRIPTION_NAME --resource-group $RESOURCE_GROUP --system-topic-name $TOPIC_NAME 2>&1 | grep -q "ResourceNotFound"; then
   az eventgrid system-topic event-subscription create --name ${SUBSCRIPTION_NAME} \
@@ -549,16 +542,16 @@ if az eventgrid system-topic event-subscription show --name $SUBSCRIPTION_NAME -
   --event-delivery-schema eventgridschema \
   --included-event-types Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted >> $log_filename
   if [ $? -eq 0 ]; then
-    echo "Step 14/14 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
-    echo "Step 14/14 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" >> $log_filename
+    echo "Step 13/13 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
+    echo "Step 13/13 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" >> $log_filename
   else
-    echo "Step 14/14 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
-    echo "Step 14/14 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" >> $log_filename
+    echo "Step 13/13 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
+    echo "Step 13/13 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" >> $log_filename
     exit
   fi
 else
-  echo "Step 14/14 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic"
-  echo "Step 14/14 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic" >> $log_filename
+  echo "Step 13/13 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic"
+  echo "Step 13/13 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic" >> $log_filename
 fi
 
 echo "All the azure cloud function installer logs are logged to ${log_filename} file"
