@@ -48,6 +48,20 @@ while true; do
 done
 
 while true; do
+  echo "Do you have 'key vault crypto officer', 'key vault secrets officer' and 'key vault data access administrator' access on your azure subscription? (yes/no):"
+  read user_input
+
+  if [ "$user_input" == "yes" ]; then
+    break
+  elif [ "$user_input" == "no" ]; then
+    echo "In order to run all the steps of this script, one must have access to 'key vault crypto officer', 'key vault secrets officer' and 'key vault data access administrator' at your azure subscription level, please contact your administrator to add you with these accesses"
+    exit
+  else
+    echo "Invalid input. Please enter 'yes' or 'no'."
+  fi
+done
+
+while true; do
   echo "Running this script will create new resources (if it does not exists) such as resource-group, storage-account, container, function-app, system-topic and event-subscription in azure. Agree to proceed? (yes/no):"
   read user_input
 

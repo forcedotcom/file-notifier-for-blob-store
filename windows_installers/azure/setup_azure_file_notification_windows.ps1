@@ -136,6 +136,21 @@ while ($true) {
 }
 
 while ($true) {
+    $user_input = Read-Host "Do you have 'key vault crypto officer', 'key vault secrets officer' and 'key vault data access administrator' access on your azure subscription? (yes/no):"
+    if ($user_input -eq "yes") {
+        break
+    }
+    elseif ($user_input -eq "no") {
+        Write-Host "In order to run all the steps of this script, one must have access to 'key vault crypto officer', 'key vault secrets officer' and 'key vault data access administrator' at your azure subscription level, please contact your administrator to add you with these accesses"
+        exit
+    }
+    else{
+        Write-Host "Invalid input. Please enter 'yes' or 'no'."
+        continue
+    }
+}
+
+while ($true) {
     $user_input = Read-Host "Running this script will create new resources (if it does not exists) such as resource-group, storage-account, container, function-app, system-topic and event-subscription in azure. Agree to proceed? (yes/no)"
     if ($user_input -eq "yes") {
         break
@@ -499,8 +514,8 @@ Set-AzContext -SubscriptionId $AZURE_SUBSCRIPTION_NAME
 
 is_valid_location
 
-Write-Host "Step 1/13 : Successfully logged into Azure"
-"Step 1/13 : Successfully logged into Azure" | Out-File -FilePath $log_filename -Append
+Write-Host "Step 1/14 : Successfully logged into Azure"
+"Step 1/14 : Successfully logged into Azure" | Out-File -FilePath $log_filename -Append
 
 # Check if the resource group exists using Azure CLI
 $resourceGroupExists = az group show --name $RESOURCE_GROUP --query id --output tsv 2>$null
@@ -511,16 +526,16 @@ if (-not $resourceGroupExists) {
     $resourceGroupCreateOutput = az group create --name $RESOURCE_GROUP --location $LOCATION
 
     if ($resourceGroupCreateOutput) {
-        Write-Host "Step 2/13 : Successfully created resource group ${RESOURCE_GROUP}"
-        "Step 2/13 : Successfully created resource group ${RESOURCE_GROUP}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 2/14 : Successfully created resource group ${RESOURCE_GROUP}"
+        "Step 2/14 : Successfully created resource group ${RESOURCE_GROUP}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 2/13 : Failed to create resource group ${RESOURCE_GROUP}"
-        "Step 2/13 : Failed to create resource group ${RESOURCE_GROUP}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 2/14 : Failed to create resource group ${RESOURCE_GROUP}"
+        "Step 2/14 : Failed to create resource group ${RESOURCE_GROUP}" | Out-File -FilePath $log_filename -Append
         exit
     }
  } else {
-    Write-Host "Step 2/13 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group"
-    "Step 2/13 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 2/14 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group"
+    "Step 2/14 : Resource Group with name ${RESOURCE_GROUP} exists and skipping the creation of resource group" | Out-File -FilePath $log_filename -Append
 }
 
 # Check if the storage account exists using Azure CLI
@@ -533,16 +548,16 @@ if (-not $storageAccountExists) {
 
     # Check if the output contains information about the created storage account
     if ($storageAccountCreateOutput) {
-        Write-Host "Step 3/13 : Successfully created storage account ${STORAGE_ACCOUNT}"
-        "Step 3/13 : Successfully created storage account ${STORAGE_ACCOUNT}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}"
+        "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}" | Out-File -FilePath $log_filename -Append
     } else {
-         Write-Host "Step 3/13 : Failed to create storage account ${STORAGE_ACCOUNT}"
-         "Step 3/13 : Failed to create storage account ${STORAGE_ACCOUNT}" | Out-File -FilePath $log_filename -Append
+         Write-Host "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}"
+         "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}" | Out-File -FilePath $log_filename -Append
          exit
     }
 } else {
-        Write-Host "Step 3/13 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account"
-        "Step 3/13 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account"
+        "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account" | Out-File -FilePath $log_filename -Append
 }
 
 $conn=$(az storage account show-connection-string --resource-group $RESOURCE_GROUP --name $STORAGE_ACCOUNT --query connectionString -o tsv)
@@ -557,22 +572,22 @@ if ($containerExists -ne "true") {
 
     # Check if the output contains information about the created container
     if ($containerCreateOutput) {
-         Write-Host "Step 4/13 : Successfully created container ${CONTAINER_NAME}"
-         "Step 4/13 : Successfully created container ${CONTAINER_NAME}" | Out-File -FilePath $log_filename -Append
+         Write-Host "Step 4/14 : Successfully created container ${CONTAINER_NAME}"
+         "Step 4/14 : Successfully created container ${CONTAINER_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 4/13 : Failed to create container ${CONTAINER_NAME}"
-        "Step 4/13 : Failed to create container ${CONTAINER_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 4/14 : Failed to create container ${CONTAINER_NAME}"
+        "Step 4/14 : Failed to create container ${CONTAINER_NAME}" | Out-File -FilePath $log_filename -Append
         exit
     }
 } else {
-    Write-Host "Step 4/13 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container"
-    "Step 4/13 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 4/14 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container"
+    "Step 4/14 : Container with name ${CONTAINER_NAME} exists, skipping the creation of container" | Out-File -FilePath $log_filename -Append
 }
 
 az provider register --namespace Microsoft.EventGrid
 
-Write-Host "Step 5/13 : Successfully registered the namespace"
-"Step 5/13 : Successfully registered the namespace" | Out-File -FilePath $log_filename -Append
+Write-Host "Step 5/14 : Successfully registered the namespace"
+"Step 5/14 : Successfully registered the namespace" | Out-File -FilePath $log_filename -Append
 
 az provider show --namespace Microsoft.EventGrid --query "registrationState"
 
@@ -588,9 +603,9 @@ if (-not $systemTopicExists) {
 
     if($EXISTING_SYSTEM_TOPIC -eq "")
     {
-        Write-Host "Step 6/13 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account"
+        Write-Host "Step 6/14 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account"
 
-        "Step 6/13 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account" | Out-File -FilePath $log_filename -Append
+        "Step 6/14 : There already exists one system topic for the combination of resource group ${RESOURCE_GROUP} and storage account ${STORAGE_ACCOUNT}, Only one system topic is allowed per resource group and storage account combination, please choose different resource group or storage account" | Out-File -FilePath $log_filename -Append
         exit
     }
 
@@ -599,16 +614,16 @@ if (-not $systemTopicExists) {
 
     # Check if the output contains information about the created system topic
     if ($systemTopicCreateOutput) {
-        Write-Host "Step 6/13 : Successfully created system-topic ${TOPIC_NAME}"
-        "Step 6/13 : Successfully created system-topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 6/14 : Successfully created system-topic ${TOPIC_NAME}"
+        "Step 6/14 : Successfully created system-topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 6/13 : Failed to create system-topic ${TOPIC_NAME}"
-        "Step 6/13 : Failed to create system-topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 6/14 : Failed to create system-topic ${TOPIC_NAME}"
+        "Step 6/14 : Failed to create system-topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
         exit
     }
 } else {
-    Write-Host "Step 6/13 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic"
-    "Step 6/13 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 6/14 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic"
+    "Step 6/14 : System topic with name ${TOPIC_NAME} already exists, skipping the creation of ${TOPIC_NAME} topic" | Out-File -FilePath $log_filename -Append
 }
 
 
@@ -622,16 +637,16 @@ if (-not $functionAppExists) {
 
     # Check if the output contains information about the created function app
     if ($functionAppCreateOutput) {
-        Write-Host "Step 7/13 : Successfully created function app ${APP_NAME}"
-        "Step 7/13 : Successfully created function app ${APP_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 7/14 : Successfully created function app ${APP_NAME}"
+        "Step 7/14 : Successfully created function app ${APP_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 7/13 : Failed create function app ${APP_NAME}"
-        "Step 7/13 : Failed create function app ${APP_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 7/14 : Failed create function app ${APP_NAME}"
+        "Step 7/14 : Failed create function app ${APP_NAME}" | Out-File -FilePath $log_filename -Append
         exit
     }
 } else {
-    Write-Host "Step 7/13 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app"
-    "Step 7/13 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 7/14 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app"
+    "Step 7/14 : App with name ${APP_NAME} exists and skipping the creation of ${APP_NAME} app" | Out-File -FilePath $log_filename -Append
 }
 
 # Check if the Key Vault exists using Azure CLI
@@ -644,15 +659,15 @@ if (-not $keyVaultExists) {
 
     # Check if the output contains information about the created Key Vault
     if ($keyVaultCreateOutput) {
-        Write-Host "Step 8/13 : Successfully created keyVault ${KEY_VAULT_NAME}"
-        "Step 8/13 : Successfully created keyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 8/14 : Successfully created keyVault ${KEY_VAULT_NAME}"
+        "Step 8/14 : Successfully created keyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 8/13 : Failed to create keyVault ${KEY_VAULT_NAME}"
-        "Step 8/13 : Failed to create keyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 8/14 : Failed to create keyVault ${KEY_VAULT_NAME}"
+        "Step 8/14 : Failed to create keyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
     }
 } else {
-    Write-Host "Step 8/13 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault"
-    "Step 8/13 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 8/14 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault"
+    "Step 8/14 : KeyVault with name ${KEY_VAULT_NAME} exists, skipping the creation of KeyVault" | Out-File -FilePath $log_filename -Append
 }
 
 # Check if the rsa private key exists in the Key Vault
@@ -665,16 +680,16 @@ if (-not $rsaKeyExists) {
 
     # Check if the output contains information about the imported file
     if ($rsaKeyCreateOutput) {
-        Write-Host "Step 9/13 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
-        "Step 9/13 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 9/14 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
+        "Step 9/14 : Successfully created secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 9/13 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
-        "Step 9/13 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 9/14 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}"
+        "Step 9/14 : Failed to create secret with name RSA-PRIVATE-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
         exit
     }
 } else {
-    Write-Host "Step 9/13 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY"
-    "Step 9/13 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 9/14 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY"
+    "Step 9/14 : Key with name RSA-PRIVATE-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY" | Out-File -FilePath $log_filename -Append
 }
 
 # Check if the consumer key exists in the Key Vault
@@ -686,27 +701,38 @@ if (-not $consumerKeyExists) {
 
     # Check if the output contains information about the imported file
     if ($consumerKeyCreateOutput) {
-        Write-Host "Step 10/13 : Successfully created secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}"
-        "Step 9/13 : Successfully created secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 10/14 : Successfully created secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}"
+        "Step 9/14 : Successfully created secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 10/13 : Failed to create secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}"
-        "Step 10/13 : Failed to create secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 10/14 : Failed to create secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}"
+        "Step 10/14 : Failed to create secret with name CONSUMER-KEY under KeyVault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
         exit
     }
 } else {
-    Write-Host "Step 10/13 : Key with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY"
-    "Step 10/13 : Key with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY" | Out-File -FilePath $log_filename -Append
+    Write-Host "Step 10/14 : Key with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY"
+    "Step 10/14 : Key with name CONSUMER-KEY exists under KeyVault ${KEY_VAULT_NAME}, skipping the creation of RSA-PRIVATE-KEY" | Out-File -FilePath $log_filename -Append
 }
 
 az functionapp config appsettings set --name $APP_NAME --resource-group ${RESOURCE_GROUP} --settings SF_LOGIN_URL=$SF_LOGIN_URL SF_USERNAME=$SF_USERNAME KEY_VAULT_NAME=$KEY_VAULT_NAME
 
-Write-Host "Step 11/13 : Successfully set config settings to function app with name ${APP_NAME}"
-"Step 11/13 : Successfully set config settings to function app with name ${APP_NAME}" | Out-File -FilePath $log_filename -Append
+Write-Host "Step 11/14 : Successfully set config settings to function app with name ${APP_NAME}"
+"Step 11/14 : Successfully set config settings to function app with name ${APP_NAME}" | Out-File -FilePath $log_filename -Append
 
 az functionapp deployment source config-zip --resource-group $RESOURCE_GROUP --name $APP_NAME --src $SOURCE_CODE_LOCAL_PATH --build-remote true --verbose
 
-Write-Host  "Step 12/13 : Successfully deplopyed function app with name ${APP_NAME}"
-"Step 12/13 : Successfully deplopyed function app with name ${APP_NAME}" | Out-File -FilePath $log_filename -Append
+Write-Host  "Step 12/14 : Successfully deplopyed function app with name ${APP_NAME}"
+"Step 12/14 : Successfully deplopyed function app with name ${APP_NAME}" | Out-File -FilePath $log_filename -Append
+
+appPrincipalIdentity="$(az functionapp show --name $APP_NAME --resource-group $RESOURCE_GROUP --query identity.principalId -o tsv)"
+
+$roleDefinitionCryptoId = (Get-AzRoleDefinition -Name "Key Vault Crypto Officer").Id
+$roleDefinitionSecretsId = (Get-AzRoleDefinition -Name "Key Vault Secrets Officer").Id
+
+New-AzRoleAssignment -ObjectId $appPrincipalIdentity -RoleDefinitionId $roleDefinitionCryptoId -Scope subscriptions/${subscriptionId}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.KeyVault/vaults/${KEY_VAULT_NAME}
+New-AzRoleAssignment -ObjectId $appPrincipalIdentity -RoleDefinitionId $roleDefinitionSecretsId -Scope subscriptions/${subscriptionId}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.KeyVault/vaults/${KEY_VAULT_NAME}
+
+Write-Host  "Step 13/14 : Successfully attached key vault Crypto and Secrets Officer role to key vault ${KEY_VAULT_NAME}"
+"Step 13/14 : Successfully attached key vault Crypto and Secrets Officer role to key vault ${KEY_VAULT_NAME}" | Out-File -FilePath $log_filename -Append
 
 # Check if the event subscription exists using Azure CLI
 $eventSubscriptionExists = az eventgrid system-topic event-subscription show --name $SUBSCRIPTION_NAME --resource-group $RESOURCE_GROUP --system-topic-name $TOPIC_NAME --query name -o tsv 2>$null
@@ -719,17 +745,17 @@ if (-not $eventSubscriptionExists) {
 
     # Check if the output contains information about the created event subscription
     if ($eventSubscriptionCreateOutput) {
-        Write-Host "Step 13/13 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
-        "Step 13/13 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 14/14 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
+        "Step 14/14 : Successfully created subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
     } else {
-        Write-Host "Step 13/13 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
-        "Step 13/13 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
+        Write-Host "Step 14/14 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}"
+        "Step 14/14 : Faield to create subscription ${SUBSCRIPTION_NAME} to topic ${TOPIC_NAME}" | Out-File -FilePath $log_filename -Append
     }
 
 } else {
-    Write-Host "Step 13/13 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic"
+    Write-Host "Step 14/14 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic"
 
-    "Step 13/13 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic" | Out-File -FilePath $log_filename -Append
+    "Step 14/14 : subscriptions with name ${SUBSCRIPTION_NAME} to system-topic ${TOPIC_NAME} already exists, skipping the subscription of ${SUBSCRIPTION_NAME} to ${TOPIC_NAME} topic" | Out-File -FilePath $log_filename -Append
     exit
 }
 
