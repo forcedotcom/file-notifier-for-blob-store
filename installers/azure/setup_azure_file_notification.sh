@@ -394,15 +394,20 @@ else
 fi
 
 if az storage account show --name $STORAGE_ACCOUNT --resource-group $RESOURCE_GROUP 2>&1 | grep -q "ResourceNotFound" ; then
-  az storage account create --name ${STORAGE_ACCOUNT} --resource-group ${RESOURCE_GROUP} --location $LOCATION >> $log_filename
-  if [ $? -eq 0 ]; then
-     echo "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}"
-     echo "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}" >> $log_filename
+  if az storage account show --name $STORAGE_ACCOUNT 2>&1 | grep -q "not found" ; then
+    az storage account create --name ${STORAGE_ACCOUNT} --resource-group ${RESOURCE_GROUP} --location $LOCATION >> $log_filename
+    if [ $? -eq 0 ]; then
+      echo "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}"
+      echo "Step 3/14 : Successfully created storage account ${STORAGE_ACCOUNT}" >> $log_filename
+    else
+      echo "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}"
+      echo "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}" >> $log_filename
+      exit
+    fi
   else
-    echo "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}"
-    echo "Step 3/14 : Failed to create storage account ${STORAGE_ACCOUNT}" >> $log_filename
-    exit
-  fi
+      echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} is already taken by other resource group, please use different storage account and try again"
+      echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} is already taken by other resource group, please use different storage account and try again" >> $log_filename
+      exit
 else
   echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account";
   echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account" >> $log_filename
