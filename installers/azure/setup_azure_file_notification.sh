@@ -408,6 +408,7 @@ if az storage account show --name $STORAGE_ACCOUNT --resource-group $RESOURCE_GR
       echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} is already taken by other resource group, please use different storage account and try again"
       echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} is already taken by other resource group, please use different storage account and try again" >> $log_filename
       exit
+  fi
 else
   echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account";
   echo "Step 3/14 : Storage Account with name ${STORAGE_ACCOUNT} exists and skipping the creation of storage account" >> $log_filename
