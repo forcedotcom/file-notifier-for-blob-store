@@ -177,7 +177,7 @@ add_validation_error() {
 
 # Check if AWS keys is set
 function is_aws_credentials_configured {
-  if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ] || [ -z "$AWS_SESSION_TOKEN" ]; then
+  if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
     echo "Please export all the three AWS credentials (AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN) and paste it to terminal (please use https://docs.aws.amazon.com/keyspaces/latest/devguide/access.credentials.html to generate it)"
     echo "Please export all the three AWS credentials (AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN) and paste it to terminal (please use https://docs.aws.amazon.com/keyspaces/latest/devguide/access.credentials.html to generate it)" >> $log_filename
     exit
