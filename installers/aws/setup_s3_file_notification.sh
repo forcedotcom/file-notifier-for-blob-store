@@ -143,7 +143,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-config_file=$1
+config_file="$1"
 
 # Check if the file exists
 if [ ! -f "$config_file" ]; then
@@ -152,7 +152,7 @@ if [ ! -f "$config_file" ]; then
   exit 1
 fi
 
-source $config_file
+source "$config_file"
 
 current_time=$(date +"%Y-%m-%d_%H:%M:%S")
 
@@ -216,7 +216,7 @@ function is_valid_s3_bucket_name {
 
     if [ -z "$s3_bucket_name" ]; then
       add_validation_error "Error: s3 bucket name is missing/empty. Please provide a valid s3 bucket name"
-    elif [[ $s3_bucket_name =~ $regex ]] && [[ ${#s3_bucket_name} -ge 3 ]] && [[ ${#s3_bucket_name} -le 63 ]]; then
+    elif [[ "$s3_bucket_name" =~ $regex ]] && [[ ${#s3_bucket_name} -ge 3 ]] && [[ ${#s3_bucket_name} -le 63 ]]; then
       echo "${s3_bucket_name} is a valid bucket name"
       echo "${s3_bucket_name} is a valid bucket name" >> $log_filename
     else
@@ -232,7 +232,7 @@ function is_valid_lambda_role_name {
       add_validation_error "Error: LAMBDA_ROLE or IAM role name is missing/empty. Please provide a valid IAM role name"
     fi
 
-    if [[ ! $LAMBDA_ROLE =~ $regex ]]; then
+    if [[ ! "$LAMBDA_ROLE" =~ $regex ]]; then
       add_validation_error "Error: Invalid LAMBDA_ROLE or IAM role name: ${LAMBDA_ROLE}. Only alphanumeric characters, hyphens, underscores, commas, periods, at signs (@), and the plus sign (+) are allowed."
     fi
 
@@ -246,7 +246,7 @@ function is_valid_aws_secret_key_name {
     local aws_secret_key_name="$1"
     local regex="^[A-Za-z0-9/_+=-]+$"
 
-    if [[ ! $aws_secret_key_name =~ $regex ]]; then
+    if [[ ! "$aws_secret_key_name" =~ $regex ]]; then
         add_validation_error "Invalid AWS secret key name - $aws_secret_key_name. Either CONSUMER_KEY or RSA_PRIVATE_KEY name is invaid, It may contain only alphanumeric characters and the characters /_+=-."
     fi
 }
@@ -255,7 +255,7 @@ function is_valid_aws_secret_key_name {
 function is_valid_source_code_local_path {
   if [ -z "$SOURCE_CODE_LOCAL_PATH" ]; then
     add_validation_error "Error: Source code local path is missing/empty. Please provide a valid Source code local path and source code zip can be downloaded from https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/cloud_function_zips/aws_lambda_function.zip"
-  elif [ -f $SOURCE_CODE_LOCAL_PATH ]; then
+  elif [ -f "$SOURCE_CODE_LOCAL_PATH" ]; then
     echo "local source code for cloud function exists at ${SOURCE_CODE_LOCAL_PATH}"
     echo "local source code for cloud function exists at ${SOURCE_CODE_LOCAL_PATH}" >> $log_filename
 
@@ -277,7 +277,7 @@ function is_valid_pem_file_path {
   #validate the existance of local pem file path for adding secrete keys
   if [ -z "$PEM_FILE_PATH" ]; then
     add_validation_error "Error: keypair.pem file path is missing/empty. Please provide a valid .pem file path"
-  elif [ -f $PEM_FILE_PATH ]; then
+  elif [ -f "$PEM_FILE_PATH" ]; then
     echo "PEM file required for creation of secrete exists at ${PEM_FILE_PATH}"
     echo "PEM file required for creation of secrete exists at ${PEM_FILE_PATH}" >> $log_filename
   else
@@ -304,7 +304,7 @@ function is_valid_lambda_func_name {
       add_validation_error "Error: LAMBDA_FUNC_NAME is missing/empty. Please provide a valid LAMBDA_FUNC_NAME"
     fi
 
-    if [[ ! $lambda_func_name =~ $regex ]]; then
+    if [[ ! "$lambda_func_name" =~ $regex ]]; then
       add_validation_error "Invalid Lambda function name: $lambda_func_name. Only alphanumeric characters, hyphens, and underscores are allowed."
     fi
 
@@ -320,7 +320,7 @@ function is_valid_folder_name_in_s3_bucket {
   local regex="^[[:alnum:]].*[[:alnum:]]$"
 
   # Check if the string matches the regex
-  if [[ $folder_name =~ $regex ]]; then
+  if [[ "$folder_name" =~ $regex ]]; then
     echo "${folder_name} folder name with in ${bucket_name} bucket is valid which starts with an alphanumeric character and ends with an alphanumeric character."
   else
     add_validation_error "Error: ${folder_name} folder name with in ${bucket_name} bucket is invalid, folder name should start and end with alphanumeric characters"
@@ -330,19 +330,19 @@ function is_valid_folder_name_in_s3_bucket {
 is_aws_credentials_configured
 is_aws_credentials_valid
 is_valid_region
-is_valid_s3_bucket_name $EVENT_S3_SOURCE_BUCKET
-is_valid_s3_bucket_name $LAMBDA_FUNC_S3_BUCKET
-is_valid_folder_name_in_s3_bucket $EVENT_S3_SOURCE_KEY $EVENT_S3_SOURCE_BUCKET
-is_valid_folder_name_in_s3_bucket $LAMBDA_FUNC_LOC_S3_KEY $LAMBDA_FUNC_S3_BUCKET
+is_valid_s3_bucket_name "$EVENT_S3_SOURCE_BUCKET"
+is_valid_s3_bucket_name "$LAMBDA_FUNC_S3_BUCKET"
+is_valid_folder_name_in_s3_bucket $EVENT_S3_SOURCE_KEY "$EVENT_S3_SOURCE_BUCKET"
+is_valid_folder_name_in_s3_bucket "$LAMBDA_FUNC_LOC_S3_KEY" "$LAMBDA_FUNC_S3_BUCKET"
 is_valid_lambda_role_name
-is_valid_aws_secret_key_name $CONSUMER_KEY_NAME
-is_valid_aws_secret_key_name $RSA_PRIVATE_KEY_NAME
+is_valid_aws_secret_key_name "$CONSUMER_KEY_NAME"
+is_valid_aws_secret_key_name "$RSA_PRIVATE_KEY_NAME"
 is_valid_source_code_local_path
 is_valid_pem_file_path
-is_valid_lambda_func_name $LAMBDA_FUNC_NAME
+is_valid_lambda_func_name "$LAMBDA_FUNC_NAME"
 
 # Print all the validation errors
-if [ ${#validation_errors[@]} -gt 0 ]; then
+if [ "${#validation_errors[@]}" -gt 0 ]; then
   echo "There are validation errors as below:"
   echo "There are validation errors as below:" >> $log_filename
   for validation_error in "${validation_errors[@]}"; do
@@ -423,7 +423,7 @@ if aws secretsmanager get-secret-value --secret-id "$RSA_PRIVATE_KEY_NAME" 2>&1 
     # Create the consumer key secret
    aws secretsmanager create-secret \
     --name $RSA_PRIVATE_KEY_NAME \
-    --secret-string "$(cat ${PEM_FILE_PATH})" >> $log_filename
+    --secret-string "$(cat "${PEM_FILE_PATH}")" >> $log_filename
 
   if [ $? -eq 0 ]; then
     echo "Step 4/16 : Successfully created ${RSA_PRIVATE_KEY_NAME}"
@@ -564,7 +564,7 @@ echo "Step 10/16 : Successfully attached policy to ${RSA_PRIVATE_KEY_NAME}" >> $
 # Clean up the policy file
 rm "$POLICY_FILE"
 
-aws s3 cp $SOURCE_CODE_LOCAL_PATH s3://$LAMBDA_FUNC_S3_BUCKET/$LAMBDA_FUNC_LOC_S3_KEY/
+aws s3 cp "$SOURCE_CODE_LOCAL_PATH" "s3://$LAMBDA_FUNC_S3_BUCKET/$LAMBDA_FUNC_LOC_S3_KEY/"
 
 echo "Step 11/16 : Successfully uploaded source code of cloud function from ${SOURCE_CODE_LOCAL_PATH} to bucket ${LAMBDA_FUNC_S3_BUCKET}/${LAMBDA_FUNC_LOC_S3_KEY}"
 echo "Step 11/16 : Successfully uploaded source code of cloud function from ${SOURCE_CODE_LOCAL_PATH} to bucket ${LAMBDA_FUNC_S3_BUCKET}/${LAMBDA_FUNC_LOC_S3_KEY}" >> $log_filename
@@ -675,7 +675,7 @@ else
 fi
 
 echo "Concatenated notification details are as below" >> $log_filename
-echo "$(cat ${CONCATENATED_EVENT_NOTIFICATION_FILE})" >> $log_filename
+echo "$(cat "${CONCATENATED_EVENT_NOTIFICATION_FILE}")" >> $log_filename
 
 # Create the S3 bucket event notification
 aws s3api put-bucket-notification-configuration \
@@ -706,12 +706,12 @@ fi
 echo "All the s3 cloud function installer logs are logged to ${log_filename} file"
 
 #backup remove temp files
-mv $NEW_EVENT_NOTIFICATION_FILE new_notification_bkp.json
-mv $CONCATENATED_EVENT_NOTIFICATION_FILE concatenated_notification_bkp.json
+mv "$NEW_EVENT_NOTIFICATION_FILE" new_notification_bkp.json
+mv "$CONCATENATED_EVENT_NOTIFICATION_FILE" concatenated_notification_bkp.json
 if [ -e "$EXISTING_EVENT_NOTIFICATION_FILE" ]; then
-  mv $EXISTING_EVENT_NOTIFICATION_FILE existing_notification_bkp.json
+  mv "$EXISTING_EVENT_NOTIFICATION_FILE" existing_notification_bkp.json
 fi
-rm $EMPTY_EVENT_NOTIFICATION_FILE
+rm "$EMPTY_EVENT_NOTIFICATION_FILE"
 
 echo "AWS/S3 EVENT NOTIFICATION SUCCESSFUL - Below is the summary of important resources"
 echo "EVENT S3 SOURCE BUCKET NAME: ${EVENT_S3_SOURCE_BUCKET}"
