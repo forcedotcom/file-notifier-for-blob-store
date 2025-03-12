@@ -433,7 +433,7 @@ gcloud functions deploy $trimmed_delete_event_function_name \
 --trigger-event-filters="type=google.cloud.storage.object.v1.deleted" \
 --trigger-event-filters="bucket=${EVENT_GCS_BUCKET_SOURCE}" \
 --trigger-location=$TRIGGER_REGION \
---set-env-vars SF_USERNAME=$SF_USERNAME,SF_LOGIN_URL=$SF_LOGIN_URL,PROJECT_ID=$PROJECT_ID,CONSUMER_KEY=$CONSUMER_KEY_NAME,RSA_PRIVATE_KEY=$RSA_PRIVATE_KEY_NAME >> $log_filename
+--set-env-vars SF_USERNAME=$SF_USERNAME,SF_LOGIN_URL=$SF_LOGIN_URL,SF_AUDIENCE_URL=$SF_AUDIENCE_URL,PROJECT_ID=$PROJECT_ID,CONSUMER_KEY=$CONSUMER_KEY_NAME,RSA_PRIVATE_KEY=$RSA_PRIVATE_KEY_NAME >> $log_filename
 
 echo "Step 10/11 : Successfully deployed ${trimmed_delete_event_function_name}"
 echo "Step 10/11 : Successfully deployed ${trimmed_delete_event_function_name}" >> $log_filename

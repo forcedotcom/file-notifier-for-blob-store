@@ -81,7 +81,7 @@ def _get_jwt():
     due_date = datetime.now() + timedelta(minutes=50)
     iss = _get_consumer_key()
     sub = os.environ['SF_USERNAME']
-    aud = os.environ['SF_LOGIN_URL']
+    aud = os.environ.get('SF_AUDIENCE_URL', os.environ['SF_LOGIN_URL'])
     expiry = int(due_date.timestamp())
     payload = {"iss": iss, "sub": sub, "exp": expiry, "aud": aud}
     print(json.dumps(payload))

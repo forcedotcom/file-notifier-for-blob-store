@@ -577,7 +577,7 @@ if aws lambda get-function --function-name "$LAMBDA_FUNC_NAME" 2>&1 | grep -q "R
     --handler unstructured_data.s3_events_handler \
     --role $LAMBDA_ROLE_ARN \
     --code S3Bucket=$LAMBDA_FUNC_S3_BUCKET,S3Key=$LAMBDA_FUNC_LOC_S3_KEY/$(basename "$SOURCE_CODE_LOCAL_PATH") \
-    --environment "Variables={SF_LOGIN_URL=${SF_LOGIN_URL},SF_USERNAME=${SF_USERNAME},RSA_PRIVATE_KEY=${RSA_PRIVATE_KEY_NAME},CONSUMER_KEY=${CONSUMER_KEY_NAME}}" \
+    --environment "Variables={SF_LOGIN_URL=${SF_LOGIN_URL},SF_AUDIENCE_URL=${SF_AUDIENCE_URL},SF_USERNAME=${SF_USERNAME},RSA_PRIVATE_KEY=${RSA_PRIVATE_KEY_NAME},CONSUMER_KEY=${CONSUMER_KEY_NAME}}" \
     --timeout 60 >> $log_filename
 
     if [ $? -eq 0 ]; then
