@@ -94,7 +94,7 @@ def _get_jwt():
     due_date = datetime.now() + timedelta(hours=1)
     iss = vault_secret_client.get_secret('CONSUMER-KEY').value
     sub = os.environ['SF_USERNAME']
-    aud = os.environ['SF_LOGIN_URL']
+    aud = os.environ.get('SF_AUDIENCE_URL', os.environ['SF_LOGIN_URL'])
     expiry = int(due_date.timestamp())
     payload = {"iss": iss, "sub": sub, "exp": expiry, "aud": aud}
     payload_b64encoded = base64.urlsafe_b64encode(json.dumps(payload).encode('utf-8'))

@@ -541,6 +541,7 @@ fi
 az functionapp config appsettings set --name $APP_NAME \
   --resource-group ${RESOURCE_GROUP} \
   --settings SF_LOGIN_URL=$SF_LOGIN_URL \
+  SF_AUDIENCE_URL=SF_AUDIENCE_URL \
   SF_USERNAME=$SF_USERNAME \
   KEY_VAULT_NAME=$KEY_VAULT_NAME >> $log_filename
 
