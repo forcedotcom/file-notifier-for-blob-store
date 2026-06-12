@@ -313,17 +313,21 @@ function is_valid_lambda_func_name {
     fi
 }
 
-#validate name of the s3 folder in the bucket
+#validate name of the s3 folder/key in the bucket based on AWS S3 object key naming guidelines
+#Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html
 function is_valid_folder_name_in_s3_bucket {
   local folder_name="$1"
   local bucket_name="$2"
-  local regex="^[[:alnum:]].*[[:alnum:]]$"
+  # Single regex for all invalid patterns (negate the match for validation)
+  local invalid_regex="^[./]|/\.{1,2}/|/\.{1,2}$|[^a-zA-Z0-9!_.*'()/-]"
 
-  # Check if the string matches the regex
-  if [[ $folder_name =~ $regex ]]; then
-    echo "${folder_name} folder name with in ${bucket_name} bucket is valid which starts with an alphanumeric character and ends with an alphanumeric character."
+  if [ ${#folder_name} -gt 1024 ]; then
+    add_validation_error "Error: S3 key '${folder_name}' exceeds maximum length of 1024 characters"
+  elif [[ "$folder_name" =~ $invalid_regex ]]; then
+    add_validation_error "Error: S3 key '${folder_name}' in ${bucket_name} bucket is invalid. Must use safe characters (a-zA-Z0-9 ! - _ . * ' ( ) /) and cannot start with . or / or contain path traversal patterns"
   else
-    add_validation_error "Error: ${folder_name} folder name with in ${bucket_name} bucket is invalid, folder name should start and end with alphanumeric characters"
+    echo "${folder_name} is a valid S3 key within ${bucket_name} bucket"
+    echo "${folder_name} is a valid S3 key within ${bucket_name} bucket" >> $log_filename
   fi
 }
 
