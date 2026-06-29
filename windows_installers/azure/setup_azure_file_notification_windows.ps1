@@ -633,7 +633,7 @@ $functionAppExists = az functionapp show --name $APP_NAME --resource-group $RESO
 # If the function app does not exist, create it
 if (-not $functionAppExists) {
     # Create the function app and capture the output
-    $functionAppCreateOutput = az functionapp create --resource-group ${RESOURCE_GROUP} --consumption-plan-location ${LOCATION} --runtime python --runtime-version 3.9 --functions-version 4 --name ${APP_NAME} --os-type linux --assign-identity '[system]' --storage-account ${STORAGE_ACCOUNT}
+    $functionAppCreateOutput = az functionapp create --resource-group ${RESOURCE_GROUP} --consumption-plan-location ${LOCATION} --runtime python --runtime-version 3.11 --functions-version 4 --name ${APP_NAME} --os-type linux --assign-identity '[system]' --storage-account ${STORAGE_ACCOUNT}
 
     # Check if the output contains information about the created function app
     if ($functionAppCreateOutput) {
@@ -723,7 +723,7 @@ az functionapp deployment source config-zip --resource-group $RESOURCE_GROUP --n
 Write-Host  "Step 12/14 : Successfully deplopyed function app with name ${APP_NAME}"
 "Step 12/14 : Successfully deplopyed function app with name ${APP_NAME}" | Out-File -FilePath $log_filename -Append
 
-appPrincipalIdentity="$(az functionapp show --name $APP_NAME --resource-group $RESOURCE_GROUP --query identity.principalId -o tsv)"
+$appPrincipalIdentity = "$(az functionapp show --name $APP_NAME --resource-group $RESOURCE_GROUP --query identity.principalId -o tsv)"
 
 $roleDefinitionCryptoId = (Get-AzRoleDefinition -Name "Key Vault Crypto Officer").Id
 $roleDefinitionSecretsId = (Get-AzRoleDefinition -Name "Key Vault Secrets Officer").Id
@@ -741,7 +741,7 @@ $eventSubscriptionExists = az eventgrid system-topic event-subscription show --n
 if (-not $eventSubscriptionExists) {
     # Create the event subscription and capture the output
 
-    $eventSubscriptionCreateOutput = New-AzEventGridSubscription -ResourceGroup ${RESOURCE_GROUP} -TopicName ${TOPIC_NAME} -Endpoint subscriptions/${subscriptionId}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Web/sites/${APP_NAME}/functions/eventGridTrigger -EventSubscriptionName ${SUBSCRIPTION_NAME}
+    $eventSubscriptionCreateOutput = az eventgrid system-topic event-subscription create --name $SUBSCRIPTION_NAME --resource-group $RESOURCE_GROUP --system-topic-name $TOPIC_NAME --endpoint  "/subscriptions/$subscriptionId/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Web/sites/$APP_NAME/functions/eventGridTrigger" --endpoint-type azurefunction
 
     # Check if the output contains information about the created event subscription
     if ($eventSubscriptionCreateOutput) {
