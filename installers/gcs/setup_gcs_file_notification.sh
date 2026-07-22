@@ -201,6 +201,26 @@ function is_valid_gcs_bucket_name {
     fi
 }
 
+function is_valid_cloud_function_name {
+    local cloud_function_name="$1"
+    local regex="^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9]$"
+
+    if [ -z "$cloud_function_name" ]; then
+      add_validation_error "Error: Cloud function name is missing/empty. Please provide a valid cloud function name"
+    elif [[ "$cloud_function_name" =~ $regex ]]; then
+      echo "$cloud_function_name is a valid cloud function name"
+      echo "$cloud_function_name is a valid cloud function name" >> $log_filename
+
+      # Check if length is greater than 41
+      if [ ${#cloud_function_name} -gt 41 ]; then
+        echo "Warning: Cloud function name is longer than 41 characters. It will be truncated when used to create the event functions."
+        echo "Warning: Cloud function name is longer than 41 characters. It will be truncated when used to create the event functions." >> $log_filename
+      fi
+    else
+      add_validation_error "Error: Invalid Cloud Function Name: ${cloud_function_name}. Name must start with a letter and contain only letters, numbers, underscores, and hyphens."
+    fi
+}
+
 #validate the existance of local source code path for cloud function
 function is_valid_source_code_local_path {
   if [ -z "$SOURCE_CODE_LOCAL_PATH" ]; then
@@ -271,6 +291,7 @@ is_valid_region
 is_valid_location
 is_valid_gcs_bucket_name $EVENT_GCS_BUCKET_SOURCE
 is_valid_gcs_bucket_name $SOURCE_CODE_BUCKET_NAME
+is_valid_cloud_function_name $CLOUD_FUNCTION_NAME
 is_valid_source_code_local_path
 is_valid_pem_file_path
 is_valid_consumer_key_name
@@ -404,10 +425,8 @@ gcloud secrets add-iam-policy-binding $RSA_PRIVATE_KEY_NAME \
 echo "Step 8/11 : Added iam-policy to ${RSA_PRIVATE_KEY_NAME} on ${PROJECT_NUMBER}"
 echo "Step 8/11 : Added iam-policy to ${RSA_PRIVATE_KEY_NAME} on ${PROJECT_NUMBER}" >> $log_filename
 
-create_event_function_name="${EVENT_GCS_BUCKET_SOURCE}-create-event-function"
-trimmed_create_event_function_name="${create_event_function_name:0:63}"
-
-gcloud functions deploy $trimmed_create_event_function_name \
+create_event_function_name="${CLOUD_FUNCTION_NAME:0:41}-create-event-function"
+gcloud functions deploy $create_event_function_name \
 --gen2 \
 --runtime=python311 \
 --region=$GCS_REGION \
@@ -418,13 +437,11 @@ gcloud functions deploy $trimmed_create_event_function_name \
 --trigger-location=$TRIGGER_REGION \
 --set-env-vars SF_USERNAME=$SF_USERNAME,SF_LOGIN_URL=$SF_LOGIN_URL,PROJECT_ID=$PROJECT_ID,CONSUMER_KEY=$CONSUMER_KEY_NAME,RSA_PRIVATE_KEY=$RSA_PRIVATE_KEY_NAME >> $log_filename
 
-echo "Step 9/11 : Successfully deployed ${trimmed_create_event_function_name}"
-echo "Step 9/11 : Successfully deployed ${trimmed_create_event_function_name}" >> $log_filename
+echo "Step 9/11 : Successfully deployed ${create_event_function_name}"
+echo "Step 9/11 : Successfully deployed ${create_event_function_name}" >> $log_filename
 
-delete_event_function_name="${EVENT_GCS_BUCKET_SOURCE}-delete-event-function"
-trimmed_delete_event_function_name="${delete_event_function_name:0:63}"
-
-gcloud functions deploy $trimmed_delete_event_function_name \
+delete_event_function_name="${CLOUD_FUNCTION_NAME:0:41}-delete-event-function"
+gcloud functions deploy $delete_event_function_name \
 --gen2 \
 --runtime=python311 \
 --region=$GCS_REGION \
@@ -435,13 +452,11 @@ gcloud functions deploy $trimmed_delete_event_function_name \
 --trigger-location=$TRIGGER_REGION \
 --set-env-vars SF_USERNAME=$SF_USERNAME,SF_LOGIN_URL=$SF_LOGIN_URL,SF_AUDIENCE_URL=$SF_AUDIENCE_URL,PROJECT_ID=$PROJECT_ID,CONSUMER_KEY=$CONSUMER_KEY_NAME,RSA_PRIVATE_KEY=$RSA_PRIVATE_KEY_NAME >> $log_filename
 
-echo "Step 10/11 : Successfully deployed ${trimmed_delete_event_function_name}"
-echo "Step 10/11 : Successfully deployed ${trimmed_delete_event_function_name}" >> $log_filename
+echo "Step 10/11 : Successfully deployed ${delete_event_function_name}"
+echo "Step 10/11 : Successfully deployed ${delete_event_function_name}" >> $log_filename
 
-archive_event_function_name="${EVENT_GCS_BUCKET_SOURCE}-archive-event-function"
-trimmed_archive_event_function_name="${archive_event_function_name:0:63}"
-
-gcloud functions deploy $trimmed_archive_event_function_name \
+archive_event_function_name="${CLOUD_FUNCTION_NAME:0:41}-archive-event-function"
+gcloud functions deploy $archive_event_function_name \
 --gen2 \
 --runtime=python311 \
 --region=$GCS_REGION \
@@ -452,8 +467,8 @@ gcloud functions deploy $trimmed_archive_event_function_name \
 --trigger-location=$TRIGGER_REGION \
 --set-env-vars SF_USERNAME=$SF_USERNAME,SF_LOGIN_URL=$SF_LOGIN_URL,PROJECT_ID=$PROJECT_ID,CONSUMER_KEY=$CONSUMER_KEY_NAME,RSA_PRIVATE_KEY=$RSA_PRIVATE_KEY_NAME >> $log_filename
 
-echo "Step 11/11 : Successfully deployed ${trimmed_archive_event_function_name}"
-echo "Step 11/11 : Successfully deployed ${trimmed_archive_event_function_name}" >> $log_filename
+echo "Step 11/11 : Successfully deployed ${archive_event_function_name}"
+echo "Step 11/11 : Successfully deployed ${archive_event_function_name}" >> $log_filename
 echo "All the gcs cloud function installer logs are logged to ${log_filename} file"
 
 echo "GCS EVENT NOTIFICATION SUCCESSFUL - Below is the summary of important resources"
@@ -464,7 +479,7 @@ echo "RSA PRIVATE KEY NAME : ${RSA_PRIVATE_KEY_NAME}"
 echo "GCS REGION : ${GCS_REGION}"
 echo "BUCKET LOCATION : ${LOCATION}"
 echo "TRIGGER REGION : ${TRIGGER_REGION}"
-echo "Create cloud function name : ${trimmed_create_event_function_name}"
-echo "Delete cloud function name : ${trimmed_delete_event_function_name}"
-echo "Archive cloud function name : ${trimmed_archive_event_function_name}"
+echo "Create cloud function name : ${create_event_function_name}"
+echo "Delete cloud function name : ${delete_event_function_name}"
+echo "Archive cloud function name : ${archive_event_function_name}"
 echo "As a next step, you can create the relevant parent and second level directories (if they don't exist) in the above ${EVENT_GCS_BUCKET_SOURCE} bucket such that they align with the parent directory in GCS connector and the directory mentioned while UDLO creation"
