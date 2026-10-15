@@ -38,7 +38,7 @@ def s3_events_handler(event, context):
     beacon_url = 'https://' + instance_url + '/api/v1/unstructuredIngest?sourceType=aws'
     beacon_header = {'Authorization': 'Bearer ' + cdp_access_token, 'Content-Type': 'application/json'}
     beacon_response = requests.post(beacon_url, headers=beacon_header, json=event)
-    beacon_response.raise_for_status()
+    _raise_for_salesforce_response(beacon_response, 'Ingest beacon request')
     print('Beacon Response - ' + str(beacon_response.json()))
 
 def _get_token_and_instance_url():
@@ -55,7 +55,7 @@ def _get_token_and_instance_url():
         instance_url = os.environ['SF_LOGIN_URL'] + '/services/oauth2/token'
         data = {'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion': jwt_token}
         core_response = requests.post(instance_url, data=data)
-        core_response.raise_for_status()
+        _raise_for_salesforce_response(core_response, 'Core token request')
         print('Response core access token generated successfully')
 
         core_access_token = core_response.json()['access_token']
@@ -66,7 +66,7 @@ def _get_token_and_instance_url():
         cdp_token_path = '/services/a360/token'
         cdp_url = core_instance_url + cdp_token_path
         cdp_response = requests.post(cdp_url, data=cdp_data)
-        cdp_response.raise_for_status()
+        _raise_for_salesforce_response(cdp_response, 'CDP token request')
         print('Response cdp access token generated successfully')
         cdp_access_token = cdp_response.json()['access_token']
         instance_url = cdp_response.json()['instance_url']
@@ -98,6 +98,50 @@ def _get_rsa_key():
 def _get_consumer_key():
     secret_id = os.environ.get('CONSUMER_KEY', 'CONSUMER_KEY')
     return _access_secret(secret_id)
+
+
+def _salesforce_error_fields(response):
+    try:
+        payload = response.json()
+    except ValueError:
+        return None, None
+    if isinstance(payload, list):
+        payload = payload[0] if payload and isinstance(payload[0], dict) else None
+    if not isinstance(payload, dict):
+        return None, None
+    error = payload.get('error') or payload.get('errorCode')
+    description = payload.get('error_description') or payload.get('message')
+    return error, description
+
+
+def _salesforce_error_detail(response):
+    error, description = _salesforce_error_fields(response)
+    parts = []
+    if error:
+        parts.append('error=%s' % error)
+    if description:
+        parts.append('error_description=%s' % description)
+    if not parts:
+        text = (response.text or '').strip().replace('\n', ' ')
+        if text:
+            parts.append('body=%s' % text[:500])
+    return ' '.join(parts)
+
+
+def _raise_for_salesforce_response(response, step):
+    if response.ok:
+        return
+    detail = _salesforce_error_detail(response)
+    message = '%s failed: %s %s for url: %s. username=%s. %s' % (
+        step,
+        response.status_code,
+        response.reason,
+        response.url,
+        os.environ.get('SF_USERNAME', ''),
+        detail,
+    )
+    logger.error(message)
+    raise requests.HTTPError(message, response=response)
 
 
 def _access_secret(secret_id: str) -> str:
